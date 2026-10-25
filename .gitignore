@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Секреты и локальные настройки
+.env
+
+# macOS
+.DS_Store
+
+# Бриф для Claude — держим локально
+CLAUDE.md
