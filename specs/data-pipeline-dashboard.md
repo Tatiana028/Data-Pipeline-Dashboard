@@ -91,7 +91,7 @@ raw → clean → aggregate, идемпотентный upsert, лог запу�
     `migrate`, `etl`, `api` (порт 8000), `dashboard` (порт 8501).
     `docker compose up --build` с чистой машины → через ≤ 2 мин дашборд показывает
     данные за ~30 дней по всем городам.
-30. Один `Dockerfile` (Python 3.11-slim) для всех Python-сервисов, разные `command`.
+30. Один `Dockerfile` (Python 3.12-slim) для всех Python-сервисов, разные `command`.
 31. Зависимости — `pyproject.toml`; линт — `ruff`.
 
 **Тесты и CI**
@@ -121,7 +121,7 @@ raw → clean → aggregate, идемпотентный upsert, лог запу�
 - Pre-commit хуки (ruff).
 
 ## Constraints
-- Python 3.11; `httpx`, `tenacity`, `pydantic` v2, `pydantic-settings`, SQLAlchemy 2.x Core,
+- Python 3.12; `httpx`, `tenacity`, `pydantic` v2, `pydantic-settings`, SQLAlchemy 2.x Core,
   `psycopg` 3, Alembic, APScheduler 3.x, FastAPI + uvicorn, Streamlit, `pandas`, `plotly`,
   `pytest`, `respx`, `ruff`.
 - Никаких API-ключей и секретов; пароль БД только для локального compose, в `.env.example`.
