@@ -4,12 +4,14 @@ __pycache__/
 .venv/
 .pytest_cache/
 .ruff_cache/
+*.egg-info/
 
 # Секреты и локальные настройки
 .env
 
 # macOS
 .DS_Store
+
 
 # Бриф для Claude — держим локально
 CLAUDE.md
