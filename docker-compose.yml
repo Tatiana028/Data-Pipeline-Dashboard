@@ -1,3 +1,10 @@
+# Общие настройки для всех сервисов с нашим кодом
+x-app: &app
+  build: .
+  image: weather-app
+  environment:
+    DATABASE_URL: postgresql+psycopg://weather:weather@db:5432/weather
+
 services:
   db:
     image: postgres:16
@@ -13,6 +20,48 @@ services:
       test: ["CMD-SHELL", "pg_isready -U weather"]
       interval: 5s
       retries: 10
+
+  migrate:
+    <<: *app
+    command: ["alembic", "upgrade", "head"]
+    depends_on:
+      db:
+        condition: service_healthy
+
+  etl:
+    <<: *app
+    command: ["python", "-m", "src.etl.scheduler"]
+    restart: unless-stopped
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  api:
+    <<: *app
+    command: ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      retries: 5
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  dashboard:
+    <<: *app
+    command: ["streamlit", "run", "src/dashboard/app.py",
+              "--server.address", "0.0.0.0", "--server.port", "8501", "--server.headless", "true"]
+    environment:
+      API_URL: http://api:8000
+    ports:
+      - "8501:8501"
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
 
 volumes:
   pgdata:
